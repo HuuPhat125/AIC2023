@@ -19,12 +19,18 @@
     {% if search_result %}
     <h2>Search Results:</h2>
     <ul>
-        {% for result in search_result %}
+        <!-- {% for result in search_result %}
         <li>
             <h3>{{ result.video_name }} - Keyframe {{ result.keyframe_id }}</h3>
             <img src="{{ images[loop.index0] }}" alt="Image">
         </li>
-{% endfor %}
+        {% endfor %} -->
+        {% for image in images %}
+        <li>
+            <h3>{{ image }}</h3>
+            <img src="{{ image }}" alt="Image">
+        </li>
+        {% endfor %}
 
     </ul>
     {% endif %}

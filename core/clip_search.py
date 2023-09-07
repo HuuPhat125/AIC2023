@@ -83,14 +83,14 @@ def search_engine(query_arr: np.array,
     '''Sắp xếp kết quả'''
     measure = sorted(measure, key=lambda x:x[1])
 
-    MAP_KEYFRAMES_PATH = "../MapKeyframes/"
+    MAP_KEYFRAMES_PATH = "C:\AIC2023\DatasetsAIC2023\MapKeyframes"
 
     '''Trả về top K kết quả'''
     search_result = []
     for instance in measure[:topk]:
         ins_id, distance = instance
         video_name, idx = db[ins_id][0], db[ins_id][1]
-        map_keyframes_cur_path = MAP_KEYFRAMES_PATH + video_name +'.csv'
+        map_keyframes_cur_path = os.path.join(MAP_KEYFRAMES_PATH , video_name +'.csv')
         df = pd.read_csv(map_keyframes_cur_path)
         frame_idx = df.loc[df['n'] == idx+1, 'frame_idx'].iloc[0]
         search_result.append({"video_folder": video_name[:3],
@@ -115,14 +115,14 @@ def search_engine(query_arr: np.array,
 def read_image(results: List[dict]):
     images = []
     IMAGE_KEYFRAME_PATH = "C:\AIC2023\DatasetsAIC2023\Keyframes"  # Đường dẫn đến thư mục chứa keyframes
-    IMAGE_RESIZED_KEYFRAME_PATH = "../Resized_keyframes"
+    IMAGE_RESIZED_KEYFRAME_PATH = "C:\AIC2023\DatasetsAIC2023\Resized_keyframes"
     for res in results:
         folder_path = res["video_folder"]
-        IMAGE_KEYFRAME_FOLDER_PATH = IMAGE_KEYFRAME_PATH + folder_path + '/'
+        # IMAGE_KEYFRAME_FOLDER_PATH = IMAGE_KEYFRAME_PATH +  folder_path + '/'
         # IMAGE_KEYFRAME_FOLDER_PATH = IMAGE_RESIZED_KEYFRAME_PATH + folder_path + '/'
         video_name = res["video_name"]
         keyframe_id = res["keyframe_id"]
-        video_folder = os.path.join(IMAGE_KEYFRAME_FOLDER_PATH, video_name)
+        video_folder = os.path.join(IMAGE_KEYFRAME_PATH, folder_path, video_name)
 
         if os.path.exists(video_folder):
             image_files = sorted(os.listdir(video_folder))

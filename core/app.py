@@ -7,7 +7,7 @@ from clip_search import TextEmbedding, search_engine, read_image, indexing_metho
 
 app = Flask(__name__)
 
-features_path = '../Features'
+features_path = 'C:\AIC2023\DatasetsAIC2023\Features'
 text_embedd = TextEmbedding()
 visual_features_df = indexing_methods(features_path)
 visual_features_db = visual_features_df.to_records(index=False).tolist()
@@ -32,3 +32,13 @@ def index():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+# query_text = input()
+# topk = int(input())
+# text_feat_arr = text_embedd(query_text)
+
+# # Thực hiện tìm kiếm và lấy kết quả
+# search_result = search_engine(text_feat_arr, visual_features_db, topk, "cosine_similarity")
+# images = read_image(search_result)
+# for image in images:
+#     print(image)
