@@ -4,35 +4,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image Search</title>
+    <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
     <h1>Image Search</h1>
     <form method="POST">
         <label for="query">Query:</label>
-        <input type="text" id="query" name="query" required>
+        <input type="text" id="query" name="query" value="{{ query|default('') }}" required>
+        <br>
+        <label for="then_info">Then info:</label>
+        <input type="text" id="then_info" name="then_info" value="{{ then_info|default('') }}" >
         <br>
         <label for="topk">Top K:</label>
-        <input type="number" id="topk" name="topk" value="10" required>
+        <input type="number" id="topk" name="topk" value="100" required>
+        <br>
+        <label for="measure_method">Measure method:</label>
+        <select name="measure_method" id="measure_method" required>
+            <option value="cosine_similarity" selected> cosine_similarity</option>
+            <option value="l1_norm">l1_norm</option>
+        </select>
         <br>
         <button type="submit">Search</button>
     </form>
-    {% if search_result %}
-    <h2>Search Results:</h2>
-    <ul>
-        <!-- {% for result in search_result %}
-        <li>
-            <h3>{{ result.video_name }} - Keyframe {{ result.keyframe_id }}</h3>
-            <img src="{{ images[loop.index0] }}" alt="Image">
-        </li>
-        {% endfor %} -->
-        {% for image in images %}
-        <li>
-            <h3>{{ image }}</h3>
-            <img src="{{ image }}" alt="Image">
-        </li>
-        {% endfor %}
+    
+    {% for i in range(_len) %}
+    <div class="image-container">
+        <img src="{{ images_path[i] }}" alt="Image {{ i }}" width="200" height="auto"
+            onclick="playVideo('{{ videos_path[i] }}', {{ starts_time[i] }}, {{ starts_time[i] + 10 }})"
+            title="Tên hình ảnh: {{ images_name[i] }}"
+        />
+    </div>
+    {% endfor %}
 
-    </ul>
-    {% endif %}
+    <div id="videoContainer">
+        <div id="videoBox">
+            <video width="640" height="480" controls id="videoPlayer">
+                <source src="" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </div>
+
+
+    <script src="/static/script.js" type="text/javascript"></script>
+    
 </body>
 </html>

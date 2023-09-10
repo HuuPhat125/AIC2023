@@ -1,5 +1,7 @@
 /Features/
-/Keyframes/
 /MapKeyframes/
-/Resized_keyframes/
-/Video/
+/core/static/Keyframes/
+/core/static/Resized_keyframes/
+/core/static/Video/
+/core/nhap.py
+/core/templates/image.html
