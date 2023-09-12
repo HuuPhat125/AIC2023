@@ -1,3 +1,4 @@
+'''
 DATASETAIC2023
 │
 ├── core/
@@ -19,6 +20,7 @@ DATASETAIC2023
 ├── .gitignore
 │
 ├── resize/ (Không sử dụng)
+'''
 # Run:
 run file app.py
 Open localhost:5000
