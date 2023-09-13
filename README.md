@@ -1,6 +1,26 @@
-# AIC2023
-## clone this repo in folder DATASETAIC2023
-## 1. Run file 'resize.py' to resize keyframes, new folder name Resized_keyframes will created
-## 2. Run file 'core/app.py to launch the server 
-# Bug
-Images still are not visible on web :((
+
+DATASETAIC2023\
+│\
+├── core/\
+│ ├── static/\
+│ │ ├── Keyframes/\
+│ │ ├── Video/\
+│ │ ├── script.js\
+│ │ ├── style.css\
+│ │\
+│ ├── templates/\
+│ │ ├── index.html\
+│ │ ├── print_result.html\
+|\
+| |── app.py\
+| |── clip_search.py\
+├── Features/\
+├── Mapkeyframes/\
+│\
+├── .gitignore\
+│\
+├── resize/ (Không sử dụng)\
+
+# Run:
+run file app.py
+Open localhost:5000

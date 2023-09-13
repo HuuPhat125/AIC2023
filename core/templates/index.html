@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
-    <h1>Image Search</h1>
     <form method="POST">
         <label for="query">Query:</label>
         <input type="text" id="query" name="query" value="{{ query|default('') }}" required>
@@ -25,12 +24,22 @@
         </select>
         <br>
         <button type="submit">Search</button>
+        <br>
     </form>
-    
+    <form method="post" action="/printcsv">
+        <label for="file_name">File name:</label>
+        <input type="text" name="file_name" id="file_name" required>
+        <button type="submit" class="btn btn-primary">Print CSV</button>
+    </form>
+    <form method="post" action="/images">
+        <label for="image_file">Image file</label>
+        <input type="text" name="image_file" id="image_file" required>
+        <button type="submit">Search images</button>
+    </form>
     {% for i in range(_len) %}
     <div class="image-container">
         <img src="{{ images_path[i] }}" alt="Image {{ i }}" width="200" height="auto"
-            onclick="playVideo('{{ videos_path[i] }}', {{ starts_time[i] }}, {{ starts_time[i] + 10 }})"
+            onclick="playVideo('{{ videos_path[i] }}', {{ starts_time[i] }}, {{ starts_time[i] + 30 }})"
             title="Tên hình ảnh: {{ images_name[i] }}"
         />
     </div>

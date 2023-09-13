@@ -27,3 +27,8 @@ videoContainer.addEventListener('click', function (event) {
         videoContainer.style.display = 'none';
     }
 });
+
+function redirectToImages(imageUrl) {
+    // Chuyển hướng trang web đến '/images'
+    window.location.href = "/images?image_url=" + imageUrl;
+}

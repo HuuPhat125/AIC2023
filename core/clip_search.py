@@ -8,11 +8,11 @@ import pandas as pd
 from tqdm import tqdm
 from natsort import natsorted
 from PIL import Image
-
+import csv
 class TextEmbedding():
   def __init__(self):
     self.device = "cuda" if torch.cuda.is_available() else "cpu"
-    self.model, _ = clip.load("ViT-B/16", device=self.device)
+    self.model, _ = clip.load("ViT-B/32", device=self.device)
 
   def __call__(self, text: str) -> np.ndarray:
     text_inputs = clip.tokenize([text]).to(self.device)
@@ -25,7 +25,7 @@ class TextEmbedding():
 class ImageEmbedding():
     def __init__(self):
         self.device = "cpu"
-        self.model, self.preprocess = clip.load("ViT-B/16", device=self.device)
+        self.model, self.preprocess = clip.load("ViT-B/32", device=self.device)
 
     def __call__(self, image_path: str) -> np.ndarray:
         image = Image.open(image_path).convert("RGB")
@@ -145,34 +145,8 @@ def rescore(query_arr: np.array,
     return measure
 
 
-# def read_image(results: List[dict]):
-#     images = []
-#     IMAGE_KEYFRAME_PATH = "/static/Keyframes"  # Đường dẫn đến thư mục chứa keyframes
-#     IMAGE_RESIZED_KEYFRAME_PATH = "/static/Resized_keyframes"
-#     for res in results:
-#         folder_path = res["video_folder"]
-#         video_name = res["video_name"]
-#         keyframe_id = res["keyframe_id"]
-#         video_folder = (IMAGE_KEYFRAME_PATH + '/'  + folder_path + '/' + video_name)
-
-#         if os.path.exists(video_folder):
-#             image_files = sorted(os.listdir(video_folder))
-#             # print(keyframe_id, len(image_files))
-#             if keyframe_id < len(image_files):
-#                 image_file = image_files[keyframe_id]
-#                 image_path = (video_folder + '/' +  image_file)
-
-#                 # image = Image.open(image_path)
-#                 # # put text on the image
-#                 # I1 = ImageDraw.Draw(image)
-#                 # name = video_name + ' ' + str(keyframe_id)
-#                 # font_size = 100
-#                 # font = ImageFont.truetype("../arial-cufonfonts/ARIAL.TTF", size=font_size)
-#                 # I1.text((28, 36), name, fill=(0, 0, 0), font=font)
-#                 print(image_path)
-#                 images.append(image_path)
-                
-#             else:
-#                 print(f"Keyframe id {keyframe_id} is out of range for video {video_name}.")
-#     # print(len(images))
-#     return images
+def write_to_csv(data, filename):
+    with open(filename, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        for item in data:
+            writer.writerow([item['video_name'], item['frame_idx']])
