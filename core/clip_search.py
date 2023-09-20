@@ -3,24 +3,24 @@ import os
 import numpy as np
 import torch
 import clip
+import faiss
 from typing import List
 import pandas as pd
 from tqdm import tqdm
 from natsort import natsorted
 from PIL import Image
 import csv
+
 class TextEmbedding():
-  def __init__(self):
-    self.device = "cuda" if torch.cuda.is_available() else "cpu"
-    self.model, _ = clip.load("ViT-B/32", device=self.device)
+    def __init__(self):
+        self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        self.model, _ = clip.load("ViT-B/32", device=self.device)
 
-  def __call__(self, text: str) -> np.ndarray:
-    text_inputs = clip.tokenize([text]).to(self.device)
-    with torch.no_grad():
-        text_feature = self.model.encode_text(text_inputs)[0]
-
-    return text_feature.detach().cpu().numpy()
-  
+    def __call__(self, text: str) -> np.ndarray:
+        text_inputs = clip.tokenize([text]).to(self.device)
+        with torch.no_grad():
+            text_feature = self.model.encode_text(text_inputs)[0]
+        return text_feature.detach().cpu().numpy()
 
 class ImageEmbedding():
     def __init__(self):
@@ -30,13 +30,49 @@ class ImageEmbedding():
     def __call__(self, image_path: str) -> np.ndarray:
         image = Image.open(image_path).convert("RGB")
         image_input = self.preprocess(image).unsqueeze(0).to(self.device)
-
         with torch.no_grad():
             image_feature = self.model.encode_image(image_input)[0]
-
         return image_feature.detach().cpu().numpy()
 
 
+# Hàm xây dựng index Faiss từ các vector đặc trưng của ảnh
+def build_faiss_index(features_path, dimension = 512):
+    data = {'video_name': [], 'frame_index': [], 'features_dimension': []}
+    npy_files = natsorted([file for file in os.listdir(features_path) if file.endswith(".npy")])
+    index = faiss.IndexFlatL2(dimension)
+
+    for feat_npy in tqdm(npy_files):
+        video_name = feat_npy.split('.')[0]
+        feats_arr = np.load(os.path.join(features_path, feat_npy))
+
+        # Lặp qua từng dòng trong feats_arr, mỗi dòng là một frame
+        for idx, feat in enumerate(feats_arr):
+            index.add(feat.reshape(1, -1))
+            data['video_name'].append(video_name)
+            data['frame_index'].append(idx)
+            data['features_dimension'].append(feat.shape)
+
+    df = pd.DataFrame(data)
+    return df, index
+
+def search_similar_images(db: list, index, query_vector, topk):
+    _, indices = index.search(query_vector.reshape(1, -1), topk)
+    indices = indices[0].tolist()
+    MAP_KEYFRAMES_PATH = "C:\AIC2023\DatasetsAIC2023\MapKeyframes"
+
+    '''Trả về top K kết quả'''
+    search_result = []
+    for idex in indices:
+        video_name, idx = db[idex][0], db[idex][1]
+        map_keyframes_cur_path = os.path.join(MAP_KEYFRAMES_PATH , video_name +'.csv')
+        
+        df = pd.read_csv(map_keyframes_cur_path)
+        frame_idx = df.loc[df['n'] == idx+1, 'frame_idx'].iloc[0]
+        search_result.append({"video_folder": video_name[:3],
+                              "video_name": video_name,
+                              "keyframe_id": idx+1,
+                              "frame_idx": frame_idx})
+    return search_result
 def indexing_methods(features_path: str) -> pd.DataFrame:
     data = {'video_name': [], 'frame_index': [], 'features_vector': [], 'features_dimension': []}
 
@@ -145,8 +181,10 @@ def rescore(query_arr: np.array,
     return measure
 
 
-def write_to_csv(data, filename):
+def write_to_csv(data, filename, topk):
     with open(filename, mode='w', newline='') as file:
         writer = csv.writer(file)
-        for item in data:
+        for idx, item in enumerate(data):
+            if idx == topk:
+                break
             writer.writerow([item['video_name'], item['frame_idx']])

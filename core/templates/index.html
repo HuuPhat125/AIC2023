@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
+    <button type="button" id="sortImagesButton">Sort</button>
     <form method="POST">
         <label for="query">Query:</label>
         <input type="text" id="query" name="query" value="{{ query|default('') }}" required>
@@ -19,8 +20,9 @@
         <br>
         <label for="measure_method">Measure method:</label>
         <select name="measure_method" id="measure_method" required>
-            <option value="cosine_similarity" selected> cosine_similarity</option>
+            <option value="cosine_similarity"> cosine_similarity</option>
             <option value="l1_norm">l1_norm</option>
+            <option value="Faiss" selected> Faiss</option>
         </select>
         <br>
         <button type="submit">Search</button>
@@ -29,6 +31,7 @@
     <form method="post" action="/printcsv">
         <label for="file_name">File name:</label>
         <input type="text" name="file_name" id="file_name" required>
+        <input type="number", id="topk_print", name="topk_print", value="95" required>
         <button type="submit" class="btn btn-primary">Print CSV</button>
     </form>
     <form method="post" action="/images">
@@ -37,12 +40,13 @@
         <button type="submit">Search images</button>
     </form>
     {% for i in range(_len) %}
-    <div class="image-container">
-        <img src="{{ images_path[i] }}" alt="Image {{ i }}" width="200" height="auto"
-            onclick="playVideo('{{ videos_path[i] }}', {{ starts_time[i] }}, {{ starts_time[i] + 30 }})"
+    <div class="image-container" data-video-name="{{ images_name[i].split(' ')[0] }}" data-frame-index="{{ images_name[i].split(' ')[1] }}">
+        <img src="{{ images_path[i] }}" alt="Image {{ i }}" width="193" height="auto"
+            onclick="playVideo('{{ videos_path[i] }}', {{ starts_time[i] - 30  }}, {{ starts_time[i] + 240 }})"
             title="Tên hình ảnh: {{ images_name[i] }}"
         />
     </div>
+    
     {% endfor %}
 
     <div id="videoContainer">
