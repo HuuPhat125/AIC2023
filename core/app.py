@@ -117,6 +117,7 @@ def print_csv():
     if request.method == 'POST':
         file_name = request.form.get('file_name')
         topk = request.form.get('topk_print')
+        file_name = "query-p3-{}.csv".format(file_name)
         file_name = os.path.join(r'C:\AIC2023\DatasetsAIC2023\result', file_name)
         write_to_csv(method, file_name, topk)
         csv_message = "File CSV đã được in thành công!"
