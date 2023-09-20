@@ -1,4 +1,4 @@
-
+ 
 DATASETAIC2023\
 │\
 ├── core/\
@@ -21,14 +21,7 @@ DATASETAIC2023\
 │\
 ├── resize/ (Không sử dụng)\
 
-# Run:
-run file app.py
-Open localhost:5000
-
-# Run:
-run file app.py
-Open localhost:5000
-# How to you: sẽ có một biến toàn cục chứa đáp án, mỗi lần tìm kiếm thì biến đó sẽ được update 
+# How to use: sẽ có một biến toàn cục chứa đáp án, mỗi lần tìm kiếm thì biến đó sẽ được update 
 ## 1. Nhập câu query vào ô query: 
 Chỉ nhận Tiếng Anh với câu ngắn, từ câu query của ban tổ chức mình phải tóm tắt, chọn ra sự kiện, sự vật chính của frame để tìm kiếm.
 ## 2. Ô Then info: 
