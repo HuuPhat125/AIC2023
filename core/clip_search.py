@@ -1,4 +1,4 @@
-
+import requests
 import os
 import numpy as np
 import torch
@@ -10,7 +10,8 @@ from tqdm import tqdm
 from natsort import natsorted
 from PIL import Image
 import csv
-
+from googletrans import Translator
+from sentence_transformers import SentenceTransformer, util
 class TextEmbedding():
     def __init__(self):
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -35,6 +36,10 @@ class ImageEmbedding():
         return image_feature.detach().cpu().numpy()
 
 
+def translate_to_english(text):
+    translator = Translator()
+    translated = translator.translate(text, src='auto', dest='en')
+    return translated.text
 # Hàm xây dựng index Faiss từ các vector đặc trưng của ảnh
 def build_faiss_index(features_path, dimension = 512):
     data = {'video_name': [], 'frame_index': [], 'features_dimension': []}
@@ -56,7 +61,7 @@ def build_faiss_index(features_path, dimension = 512):
     return df, index
 
 def search_similar_images(db: list, index, query_vector, topk):
-    _, indices = index.search(query_vector.reshape(1, -1), topk)
+    _, indices = index.search(query_vector.reshape(1, -1), int(topk))
     indices = indices[0].tolist()
     MAP_KEYFRAMES_PATH = "C:\AIC2023\DatasetsAIC2023\MapKeyframes"
 
@@ -68,10 +73,15 @@ def search_similar_images(db: list, index, query_vector, topk):
         
         df = pd.read_csv(map_keyframes_cur_path)
         frame_idx = df.loc[df['n'] == idx+1, 'frame_idx'].iloc[0]
+        fps = df["fps"][2]
+        start_time = int(frame_idx/fps)
         search_result.append({"video_folder": video_name[:3],
                               "video_name": video_name,
                               "keyframe_id": idx+1,
-                              "frame_idx": frame_idx})
+                              "frame_idx": frame_idx,
+                              "start_time": start_time,
+                              "framepersec": fps
+                              })
     return search_result
 def indexing_methods(features_path: str) -> pd.DataFrame:
     data = {'video_name': [], 'frame_index': [], 'features_vector': [], 'features_dimension': []}
@@ -188,3 +198,37 @@ def write_to_csv(data, filename, topk):
             if idx == topk:
                 break
             writer.writerow([item['video_name'], item['frame_idx']])
+
+def getSessionId():
+    url = "https://eventretrieval.one/api/v1/login"
+    data = {
+        "username": "greenjackpot",
+        "password": "EiGh3Ier"
+    }
+    response = requests.post(url, json=data)
+
+    if response.status_code == 200:
+        result = response.json()
+        return result['sessionId']
+    else:
+        print("Request không thành công. Mã lỗi:", response.status_code)
+def Submit(videoID, frameID):
+    sessionId  = getSessionId()
+    url = "https://eventretrieval.one/api/v1/submit"
+    params = {
+        "item": videoID,
+        "frame": frameID,
+        "session": sessionId
+    }
+
+    response = requests.get(url, params=params)
+    result = response.json()
+    description = result['description']
+    if response.status_code == 200:
+        # Request thành công
+        print(f'Submit thanh cong {videoID} {frameID}')
+        return True, description
+    else:
+        # Xử lý khi request không thành công
+        print("Loi:", response.status_code, response.json())
+        return False, description

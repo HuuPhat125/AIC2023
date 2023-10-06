@@ -1,25 +1,52 @@
 var videoContainer = document.getElementById('videoContainer');
 var video = document.getElementById('videoPlayer');
+var youtubeVideoContainer = document.getElementById('youtubeVideoContainer');
+var youtubeVideo = youtubeVideoContainer.querySelector('iframe');
 var startTime = 0;
 var endTime = 0;
 
-function playVideo(videoPath, start, end) {
-    video.src = videoPath;
-    startTime = start;
-    endTime = end;
-    video.currentTime = startTime;
-    videoContainer.style.display = 'block';
-    video.playbackRate = 2.0;
-    var intervalId = setInterval(function () {
-        if (video.currentTime >= endTime) {
-            video.pause();
-            videoContainer.style.display = 'none';
-            clearInterval(intervalId);
-        }
-    }, 1000);
 
-    video.play();
+function playVideo(videoPath, start, end, frameRate) {
+    if (videoPath.includes('youtube.com')) {
+        // Thêm tham số start vào URL của video
+        var videoId = videoPath.match(/[?&]v=([^&]+)/)[1];
+        var embedURL = `https://www.youtube.com/embed/${videoId}?autoplay=1&start=${start}`;
+        youtubeVideo.src = embedURL;
+        youtubeVideoContainer.style.display = 'block';    
+    }
+    else {
+        // Nếu videoPath là đường dẫn trong thư mục, sử dụng thẻ video
+        video.src = videoPath;
+        startTime = start;
+        endTime = end;
+        video.currentTime = startTime;
+        videoContainer.style.display = 'block';
+        video.playbackRate = 2.0;
+        var intervalId = setInterval(function () {
+            if (video.currentTime >= endTime) {
+                video.pause();
+                videoContainer.style.display = 'none';
+                clearInterval(intervalId);
+            }
+        }, 1000);
+
+        video.play();
+    }
+    // hien thi frame index
+    const frameIndexElement = document.getElementById('frameIndex');
+
+    video.addEventListener('timeupdate', () => {
+      // Lấy thời gian hiện tại của video
+      const currentTime = video.currentTime;
+
+      // Tính toán frame index tương ứng
+      const frameIndex = Math.floor(currentTime * frameRate);
+
+      // Cập nhật giá trị frame index trên trang web
+      frameIndexElement.textContent = frameIndex;
+    });
 }
+
 
 videoContainer.addEventListener('click', function (event) {
     if (event.target === videoContainer) {
@@ -27,7 +54,12 @@ videoContainer.addEventListener('click', function (event) {
         videoContainer.style.display = 'none';
     }
 });
-
+youtubeVideoContainer.addEventListener('click', function (event) {
+    if (event.target === youtubeVideoContainer) {
+        youtubeVideo.src = '';
+        youtubeVideoContainer.style.display = 'none';
+    }
+});
 function redirectToImages(imageUrl) {
     // Chuyển hướng trang web đến '/images'
     window.location.href = "/images?image_url=" + imageUrl;
@@ -86,4 +118,3 @@ function setupSortImages() {
 // Gọi hàm setupSortImages để thiết lập chức năng sắp xếp
 setupSortImages();
 
-// Dưới đây có thể là các đoạn mã khác xử lý các sự kiện khác trong cùng tệp JavaScript

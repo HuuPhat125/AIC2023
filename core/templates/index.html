@@ -5,16 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image Search</title>
     <link rel="stylesheet" href="/static/style.css" />
+    <!-- <iframe id="videoPlayer" width="640" height="480" frameborder="0" allowfullscreen></iframe> -->
 </head>
 <body>
+    <p><a href="/">Back to Home</a></p>
     <button type="button" id="sortImagesButton">Sort</button>
     <form method="POST">
-        <label for="query">Query:</label>
+        <label for="query">Query (Eng or Vie):</label>
         <input type="text" id="query" name="query" value="{{ query|default('') }}" required>
         <br>
-        <label for="then_info">Then info:</label>
+        <!-- <label for="then_info">Then info:</label>
         <input type="text" id="then_info" name="then_info" value="{{ then_info|default('') }}" >
-        <br>
+        <br> -->
         <label for="topk">Top K:</label>
         <input type="number" id="topk" name="topk" value="100" required>
         <br>
@@ -28,34 +30,41 @@
         <button type="submit">Search</button>
         <br>
     </form>
-    <form method="post" action="/printcsv">
-        <label for="file_name">File name:</label>
-        <input type="text" name="file_name" id="file_name" required>
-        <input type="number", id="topk_print", name="topk_print", value="95" required>
-        <button type="submit" class="btn btn-primary">Print CSV</button>
-    </form>
     <form method="post" action="/images">
         <label for="image_file">Image file</label>
         <input type="text" name="image_file" id="image_file" required>
         <button type="submit">Search images</button>
     </form>
+    <form method="post" action="/printcsv">
+        <label for="video_name">Result:</label>
+        <input type="text" name="video_name" id="video_name" required>
+        <!-- <input type="number", id="frame_idx", name="frame_idx" required> -->
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
     {% for i in range(_len) %}
-    <div class="image-container" data-video-name="{{ images_name[i].split(' ')[0] }}" data-frame-index="{{ images_name[i].split(' ')[1] }}">
-        <img src="{{ images_path[i] }}" alt="Image {{ i }}" width="193" height="auto"
-            onclick="playVideo('{{ videos_path[i] }}', {{ starts_time[i] - 30  }}, {{ starts_time[i] + 240 }})"
+    <figure class="image-container" data-video-name="{{ images_name[i].split(' ')[0] }}" data-frame-index="{{ images_name[i].split(' ')[1] }}">
+        <img src="{{ images_path[i] }}" alt="Image {{ i }}" width="224" height="auto"
+            onclick="playVideo('{{ videos_path[i] }}', {{ starts_time[i]}}, {{ starts_time[i] + 240 }}, {{ fpss[i] }})"
             title="Tên hình ảnh: {{ images_name[i] }}"
         />
-    </div>
-    
+        <figcaption>{{ images_name[i] }}</figcaption> <!-- Hiển thị tên hình ảnh như caption -->
+    </figure>
     {% endfor %}
-
+    
     <div id="videoContainer">
         <div id="videoBox">
             <video width="640" height="480" controls id="videoPlayer">
                 <source src="" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
+            <div id="frameIndexBox">Frame Index: <span id="frameIndex">0</span></div>
         </div>
+    </div>
+    <div id="youtubeVideoContainer">
+        <div id="videoURLBox">
+            <iframe width="640" height="480" src="" title="video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+        <div id="frameIndexBox">Frame Index: <span id="frameIndex">0</span></div>
     </div>
 
 

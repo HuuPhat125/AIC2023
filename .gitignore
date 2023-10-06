@@ -11,3 +11,14 @@
 /objects
 /query
 /core/static/CustomPhoto/
+/MetaData
+/resize.py
+/yolov8n.pt
+/et HEAD~1
+/core/templates/form.html
+/core/templates/nhap.html
+/core/templates/result.html
+/core/ocr.py
+/core/zz.py
+/core/zzz.py
+/CRAFT-pytorch
