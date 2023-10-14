@@ -22,7 +22,7 @@ def embed_images_in_folder(input_folder, output_folder):
     image_embedding = ImageEmbedding()
 
     for folder_name in os.listdir(input_folder):
-        print(folder_name)
+        print(folder_name, "....")
         folder_path = os.path.join(input_folder, folder_name)
         if os.path.isdir(folder_path):
             embeddings = []
