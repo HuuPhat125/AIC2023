@@ -3,12 +3,11 @@ import os
 import json
 import requests
 import numpy as np
-from clip_search import translate_to_english, getSessionId, Submit, TextEmbedding, ImageEmbedding,build_faiss_index, search_similar_images, write_to_csv
-
+from clip_search import translate_to_english, Submit, TextEmbedding, ImageEmbedding,build_faiss_index, search_similar_images 
 app = Flask(__name__)
 
-features_path = 'C:\AIC2023\DatasetsAIC2023\Features'
 MetaData_path = 'C:\AIC2023\DatasetsAIC2023\MetaData'
+features_path = 'C:\AIC2023\DatasetsAIC2023\Features'
 video = '/static/Video'
 key_frame = '/static/Keyframes'
 text_embedd = TextEmbedding()
