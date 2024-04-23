@@ -1,37 +1,30 @@
- 
-DATASETAIC2023\
-│\
+Code for AI Challenge Ho Chi Minh City 2023.
+
+
+DATASETAIC2023/\
 ├── core/\
-│ ├── static/\
-│ │ ├── Keyframes/\
-│ │ ├── Video/\
-│ │ ├── script.js\
-│ │ ├── style.css\
-│ │\
-│ ├── templates/\
-│ │ ├── index.html\
-│ │ ├── print_result.html\
-|\
-| |── app.py\
-| |── clip_search.py\
+│   ├── static/\
+│   │   ├── Keyframes/\
+│   │   ├── Video/\
+│   │   ├── script.js\
+│   │   └── style.css\
+│   └── templates/\
+│       ├── index.html\
+│       └── print_result.html\
 ├── Features/\
 ├── Mapkeyframes/\
-│\
 ├── .gitignore\
-│\
-├── resize/ (Không sử dụng)\
+└── resize/ (Không sử dụng)\
 
-# How to use: sẽ có một biến toàn cục chứa đáp án, mỗi lần tìm kiếm thì biến đó sẽ được update 
-## 1. Nhập câu query vào ô query: 
-Chỉ nhận Tiếng Anh với câu ngắn, từ câu query của ban tổ chức mình phải tóm tắt, chọn ra sự kiện, sự vật chính của frame để tìm kiếm.
-## 2. Ô Then info: 
-Có tác dụng nhận vào thông tin "sau đó...", nó dùng kết quả sau khi dùng thông tin ở ô query, sau đó so sáng 5 key_frame liền sau của mỗi key_frame trong kết quả trước với thông tin "sau đó,..." và xếp hạng lại kết quả. MÀ CÁI NÀY NÓ KHÔNG HIỆU QUẢ CHO LẮM, BÍ QUÁ MỚI DÙNG THỬ THOI :V
+
+# How to use:
+## 1. Enter your query into **Query** box: 
+You can input in English or Vietnamese with a short sentence. You need to summarize, and select the main event, or object of the frame for searching.
+## 2. **Then info** box: 
+This function takes the "then info" as input, which utilizes the results obtained from the query box. It then compares the next 5 keyframes of each keyframe in the previous results with the information provided in the "then info", and re-ranks the results. This method may not be very efficient :> , but we're just trying it out for now. 
 ## 3. Ô Image file:
- Dùng để tìm kiếm hình ảnh tường tự với hình ảnh. Sau khi dùng thông tin tìm được từ ô Query ta sẽ thu được các key_frame, mình sẽ tìm thử hình nào gần giống nhất với câu mô tả của ban tổ chức. Sau đó mình sẽ copy "image link" (nhấn chuột phải) dán vào ô Image file, nó sẽ cập nhật biến toàn cục chứa kết quả, nó sẽ tăng tỉ lệ đúng và tìm được đúng frame của ban tổ chức. Nếu chưa tìm được thì cứ vậy lặp lại =))) nó tăng tỉ lệ tìm thấy hơn là chỉ dùng text.
+This is used to search for images similar to the given images. After obtaining the keyframes from the query box, we will try to find the images that closely resemble the description provided by the test. Then, we'll copy the "image link" (right-click) and paste it into the Image file box. It will update the global variable containing the results, increasing the accuracy of finding the correct frame. If the correct frame is not found, we'll repeat the process, which improves the likelihood of finding the correct frame compared to using only text.
 ## 3. Nhấn chuột trái vào hình trên web:
- Thì đoạn video từ frame đấy sẽ được phát (độ dài của đoạn video được phát đang là 30s). Có những trường hợp tìm được 2 hình giún với câu mô tả, mình phải coi video khúc sau để tìm được đúng. Nếu tìm được đoạn đúng với mô tả mà không phải là key_frame (tìm được khi coi video) thì tự mở video bằng MPC-HC (3 2 1) để tìm được đúng frame để nộp. Mà coi video nên dùng liên tục để tăng khả năng tìm kiếm
+ By left-clicking on the image, the video segment from that frame will be played (the length of the played video segment is currently set to 30 seconds). In some cases where two images closely match the description, we may need to watch the video segment to find the correct one. If the correct segment is found but it's not a key frame (found while watching the video), we'll manually open the video using MPC-HC (3 2 1) to find the exact frame for submission. Continuous video viewing is recommended to improve search accuracy
 ## 4. Print CSV: 
-Nhập vào tên file (ví dụ câu query trong file 'query-1.txt' thì file csv tương ứng là 'query-1.csv'). LƯU Ý: nó sẽ in ra kế quả được cập nhật cuối cùng 
-của biến toàn cục chứa đáp án. Nên là sẽ được dùng cho bước cuối cùng, khi đã tìm ra kết quả
-## LƯU Ý: Khi nhập link ảnh vòa ô Image link thì nó sẽ chuyển đến route /image. Muốn nhập lại query vào ô query thì phải quay về route mặc định 
-## Khi tìm mà hông thấy kết quả mà cũng hông thấy hình ảnh nào gần giống nhất để dùng chức năng tìm kiếm bằng link ảnh thì cách tốt nhất là đổi câu query ( diễn đạt theo cách khác, mô tả sự kiện khác,...) nếu khong có nữa thì bỏ qua =)))
+Enter the file name (for example, if the query is in the file 'query-1.txt', the corresponding csv file would be 'query-1.csv'.
